@@ -33,6 +33,9 @@ public class Member extends BaseEntity {
     private LocalDate birthDate;
 
     @Column(nullable = false)
+    private String profileImgUrl;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -44,12 +47,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    public Member(String email, String nickname, LocalDate birthDate, Gender gender, Role role, LoginType loginType) {
+    private Member(String email, String nickname, LocalDate birthDate, String profileImgUrl, Gender gender, Role role, LoginType loginType) {
         this.email = new Email(email);
         this.nickname = new Nickname(nickname);
         this.birthDate = birthDate;
+        this.profileImgUrl = profileImgUrl;
         this.gender = gender;
         this.role = role;
         this.loginType = loginType;
+    }
+
+    public static Member create(String email, String nickname, LocalDate birthDate, String profileImgUrl, Gender gender, Role role, LoginType loginType) {
+        return new Member(
+                email,
+                nickname,
+                birthDate,
+                profileImgUrl,
+                gender,
+                role,
+                loginType
+        );
     }
 }
