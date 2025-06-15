@@ -3,6 +3,7 @@ package com.backend.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "예기치 못한 서버 에러가 발생했습니다.";
+    private static final String INVALID_REQUEST_FORMAT_ERROR_NAME = "INVALID_FORMAT";
     private static final String EXCEPTION_LOG_FORMAT = "[Exception Handler] {}";
 
     @ExceptionHandler(CustomException.class)
@@ -20,6 +22,15 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 e.getErrorCode().getHttpStatus(), e.getErrorCode().getMessage());
         return new CustomProblemDetail(problemDetail, e.getErrorCode().name());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.warn(EXCEPTION_LOG_FORMAT, e.getMessage(), e);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage());
+        return new CustomProblemDetail(problemDetail, INVALID_REQUEST_FORMAT_ERROR_NAME, e);
     }
 
     @ExceptionHandler(OauthException.class)
