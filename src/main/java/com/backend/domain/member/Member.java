@@ -47,6 +47,12 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    public Member(String email, String profileImgUrl, LoginType loginType) {
+        this.email = new Email(email);
+        this.profileImgUrl = profileImgUrl;
+        this.loginType = loginType;
+    }
+
     private Member(String email, String nickname, LocalDate birthDate, String profileImgUrl, Gender gender, Role role, LoginType loginType) {
         this.email = new Email(email);
         this.nickname = new Nickname(nickname);
