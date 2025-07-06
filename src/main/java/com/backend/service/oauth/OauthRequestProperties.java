@@ -61,6 +61,6 @@ public class OauthRequestProperties {
         return redirectUris.stream()
                 .filter(uri -> uri.equals(redirectUri))
                 .findAny()
-                .orElseThrow(() -> new CustomException(ErrorCode.OAUTH_REDIREC_URI_MISMATCH));
+                .orElseThrow(() -> new CustomException(ErrorCode.OAUTH_REDIRECT_URI_MISMATCH));
     }
 }
