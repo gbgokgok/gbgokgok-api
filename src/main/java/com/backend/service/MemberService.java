@@ -84,4 +84,13 @@ public class MemberService {
         return memberRepository.findById(authMember.id())
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     }
+
+    public void logout(String accessToken, String refreshToken) {
+        AuthMember accessMember = jwtTokenResolver.resolveAccessToken(accessToken);
+        AuthMember refreshMember = jwtTokenResolver.resolveRefreshToken(refreshToken);
+
+        if (!accessMember.id().equals(refreshMember.id())) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_TOKEN_MEMBER_MISMATCH);
+        }
+    }
 }

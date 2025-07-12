@@ -20,6 +20,7 @@ public enum ErrorCode {
     AUTHENTICATION_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     AUTHENTICATION_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰 정보입니다."),
     AUTHORIZATION_HEADER_MISSING(HttpStatus.BAD_REQUEST, "Authorization 헤더가 존재하지 않습니다."),
+    AUTHENTICATION_TOKEN_MEMBER_MISMATCH(HttpStatus.UNAUTHORIZED, "엑세스 토큰과 리프레시 토큰의 소유자가 다릅니다."),
 
     // Member
     MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 회원가입 된 회원입니다."),

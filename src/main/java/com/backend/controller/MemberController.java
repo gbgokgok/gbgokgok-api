@@ -1,11 +1,15 @@
 package com.backend.controller;
 
+import com.backend.common.config.MemberPrincipal;
 import com.backend.controller.cookie.CookieProvider;
+import com.backend.controller.cookie.CookieResolver;
+import com.backend.domain.member.Member;
 import com.backend.dto.BaseResponse;
 import com.backend.dto.request.GoogleOauthLoginRequest;
 import com.backend.dto.request.MemberSignupRequest;
 import com.backend.dto.response.AuthTokenResponse;
 import com.backend.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final CookieProvider cookieProvider;
+    private final CookieResolver cookieResolver;
     private final MemberService memberService;
 
     @PostMapping("/oauth/login")
@@ -52,6 +57,22 @@ public class MemberController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .build();
+    }
+
+    @PostMapping("/oauth/logout")
+    public ResponseEntity<BaseResponse<Void>> logout(@MemberPrincipal Member member, HttpServletRequest request) {
+        String accessToken = cookieResolver.extractAccessToken(request);
+        String refreshToken = cookieResolver.extractRefreshToken(request);
+
+        memberService.logout(accessToken, refreshToken);
+
+        ResponseCookie deletedAccessTokenCookie = cookieProvider.deleteAccessTokenCookie();
+        ResponseCookie deletedRefreshTokenCookie = cookieProvider.deleteRefreshTokenCookie();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, deletedAccessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deletedRefreshTokenCookie.toString())
                 .build();
     }
 }
