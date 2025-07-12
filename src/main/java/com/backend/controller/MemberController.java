@@ -75,4 +75,17 @@ public class MemberController {
                 .header(HttpHeaders.SET_COOKIE, deletedRefreshTokenCookie.toString())
                 .build();
     }
+
+    @PostMapping("/accessToken/reissue")
+    public ResponseEntity<BaseResponse<Void>> reissueAccessToken(HttpServletRequest request) {
+        cookieResolver.checkLoginRequired(request);
+
+        String refreshToken = cookieResolver.extractRefreshToken(request);
+        String accessToken = memberService.reissueAccessToken(refreshToken);
+
+        ResponseCookie accessTokenCookie = cookieProvider.createAccessTokenCookie(accessToken);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .build();
+    }
 }

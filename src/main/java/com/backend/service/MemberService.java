@@ -93,4 +93,12 @@ public class MemberService {
             throw new CustomException(ErrorCode.AUTHENTICATION_TOKEN_MEMBER_MISMATCH);
         }
     }
+
+    @Transactional(readOnly = true)
+    public String reissueAccessToken(String refreshToken) {
+        AuthMember authMember = jwtTokenResolver.resolveRefreshToken(refreshToken);
+        Member member = memberRepository.findById(authMember.id())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        return jwtTokenProvider.createAccessToken(member);
+    }
 }
