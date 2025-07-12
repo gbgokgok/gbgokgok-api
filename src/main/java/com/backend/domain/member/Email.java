@@ -30,7 +30,7 @@ public class Email {
 
     private void validateEmailPattern(String email) {
         if (!EMAIL_REGEX.matcher(email).matches()) {
-            throw new CustomException(ErrorCode.USER_EMAIL_INVALID_FORMAT);
+            throw new CustomException(ErrorCode.MEMBER_EMAIL_INVALID_FORMAT);
         }
     }
 }

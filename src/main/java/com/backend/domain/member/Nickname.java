@@ -28,11 +28,11 @@ public class Nickname {
 
     private void validateNickname(String nickname) {
         if (NUMERIC_ONLY_NICKNAME_REGEX.matcher(nickname).matches()) {
-            throw new CustomException(ErrorCode.USER_NICKNAME_INVALID_FORMAT);
+            throw new CustomException(ErrorCode.MEMBER_NICKNAME_INVALID_FORMAT);
         }
 
         if (!KOREAN_NICKNAME_REGEX.matcher(nickname).matches() && !ENGLISH_NICKNAME_REGEX.matcher(nickname).matches()) {
-            throw new CustomException(ErrorCode.USER_NICKNAME_INVALID_FORMAT);
+            throw new CustomException(ErrorCode.MEMBER_NICKNAME_INVALID_FORMAT);
         }
     }
 }

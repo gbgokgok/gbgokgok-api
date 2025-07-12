@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProperties {
 
-    protected final String TOKEN_TYPE = "type";
+    protected static final String TOKEN_TYPE = "type";
 
     private final String secretKey;
     private final long accessTokenExpirationMillis;

@@ -20,7 +20,7 @@ public class OauthClient {
 
         String userInfoRequestUri = oauthRequestProperties.getUserInfoUri();
         String header = "Authorization";
-        String headerValue = "Bearer " +googleOauthTokenResponse.access_token();
+        String headerValue = "Bearer " + googleOauthTokenResponse.access_token();
 
         return restClient.get()
                 .uri(userInfoRequestUri)

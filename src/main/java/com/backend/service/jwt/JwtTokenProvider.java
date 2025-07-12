@@ -1,5 +1,6 @@
 package com.backend.service.jwt;
 
+import com.backend.domain.member.LoginType;
 import com.backend.domain.member.Member;
 import com.backend.dto.response.GoogleOauthInfoApiResponse;
 import io.jsonwebtoken.JwtBuilder;
@@ -27,6 +28,7 @@ public class JwtTokenProvider {
         return createToken(member, expirationMillis, TokenType.REFRESH_TOKEN);
     }
 
+    // TODO: 카카오 로그인 추가 시 메소드 수정
     public String createSignupToken(GoogleOauthInfoApiResponse oauthInfoApiResponse) {
         long expirationMillis = jwtTokenProperties.getSignupTokenExpirationMillis();
 
@@ -35,14 +37,15 @@ public class JwtTokenProvider {
 
         Map<String, Object> claims = Map.of(
                 "email", oauthInfoApiResponse.email(),
-                "picture", oauthInfoApiResponse.picture()
+                "picture", oauthInfoApiResponse.picture(),
+                "provider", LoginType.GOOGLE
         );
 
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setSubject(SIGNUP_SUBJECT)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .claim(jwtTokenProperties.TOKEN_TYPE, TokenType.SIGNUP_TOKEN)
+                .claim(JwtTokenProperties.TOKEN_TYPE, TokenType.SIGNUP_TOKEN)
                 .signWith(jwtTokenProperties.getSecretKey());
         claims.forEach(jwtBuilder::claim);
 

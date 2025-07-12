@@ -16,10 +16,16 @@ public enum ErrorCode {
     ACCESS_TOKEN_EMPTY(HttpStatus.UNAUTHORIZED, "액세스 토큰이 존재하지 않습니다. 액세스 토큰을 발급해주세요."),
     REFRESH_TOKEN_EMPTY(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요."),
     TOKEN_EMPTY(HttpStatus.UNAUTHORIZED, "로그인이 필요한 사용자입니다."),
+    AUTHENTICATION_TOKEN_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "올바르지 않은 토큰 타입입니다."),
+    AUTHENTICATION_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+    AUTHENTICATION_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰 정보입니다."),
+    AUTHORIZATION_HEADER_MISSING(HttpStatus.BAD_REQUEST, "Authorization 헤더가 존재하지 않습니다."),
 
-    // User
-    USER_EMAIL_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 이메일 형식입니다."),
-    USER_NICKNAME_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "닉네임은 한글(숫자 포함) 2~6자 또는 영어(숫자 포함) 2~14자만 가능합니다.");
+    // Member
+    MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 회원가입 된 회원입니다."),
+    MEMBER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "존재하지 않는 회원입니다."),
+    MEMBER_EMAIL_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 이메일 형식입니다."),
+    MEMBER_NICKNAME_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "닉네임은 한글(숫자 포함) 2~6자 또는 영어(숫자 포함) 2~14자만 가능합니다.");
 
 
     private final HttpStatus httpStatus;
