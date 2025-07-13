@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -56,6 +57,21 @@ public interface MemberControllerSwagger {
     ResponseEntity<BaseResponse<Void>> signup(
             @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody MemberSignupRequest request);
+
+    @Operation(
+            summary = "닉네임 유효성 검사",
+            description = "닉네임 형식과 중복 여부를 검증한다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "사용 가능한 닉네임일 경우 true를 반환한다."
+                    )
+            }
+    )
+    @SwaggerError400
+    @SwaggerError500
+    ResponseEntity<BaseResponse<Boolean>> checkNickname(
+            @Parameter(description = "닉네임") @PathVariable("nickname") String nickname);
 
     @Operation(
             summary = "로그아웃",
