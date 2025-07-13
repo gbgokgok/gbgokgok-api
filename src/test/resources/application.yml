@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:database;DB_CLOSE_DELAY=-1;
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    open-in-view: false
+
+oauth:
+  google:
+    client_id: client_id
+    client_secret: secret
+    token_request_uri: https://oauth2.googleapis.com/token
+    user_info_uri: https://www.googleapis.com/oauth2/v2/userinfo
+    grant_type: authorization_code
+    redirect_uris: callback
+
+jwt:
+  secret-key: SecretSecretSecretSecretSecretSe
+  accessToken-expiration-millis: 1800000 # 30분
+  refreshToken-expiration-millis: 604800000 # 7일
+  signupToken-expiration-millis: 300000 # 5분
+
+domain: localhost
+sameSite: Lax
+access-token-path: /
+refresh-token-path: /
