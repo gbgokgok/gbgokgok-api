@@ -77,7 +77,7 @@ class MemberServiceTest extends BaseServiceTest {
         memberRepository.save(member);
 
         String authorizationHeader = "Bearer SIGNUP_TOKEN";
-        MemberSignupRequest request = new MemberSignupRequest("곡곡", LocalDate.of(2025, 7, 11), Gender.MALE);
+        MemberSignupRequest request = new MemberSignupRequest("공공", LocalDate.of(2025, 7, 11), Gender.MALE);
 
         Claims claims = Jwts.claims();
         claims.put("email", "test@gmail.com");
@@ -92,6 +92,58 @@ class MemberServiceTest extends BaseServiceTest {
         assertThatThrownBy(() -> memberService.signup(authorizationHeader, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.MEMBER_ALREADY_EXIST.getMessage());
+    }
+
+    @Test
+    void 회원가입_시_중복된_닉네임이라면_예외가_발생한다() {
+        // given
+        Member member = Member.create("test@gmail.com",
+                "곡곡",
+                LocalDate.of(1990, 3, 31),
+                "https://profileImgUrl",
+                Gender.MALE,
+                Role.USER,
+                LoginType.GOOGLE);
+        memberRepository.save(member);
+
+        String authorizationHeader = "Bearer SIGNUP_TOKEN";
+        MemberSignupRequest request = new MemberSignupRequest("곡곡", LocalDate.of(2025, 7, 11), Gender.MALE);
+
+        Claims claims = Jwts.claims();
+        claims.put("email", "test@gmail.com");
+        claims.put("picture", "https://img");
+        claims.put("token", TokenType.SIGNUP_TOKEN.name());
+
+        String extractBearerToken = "SIGNUP_TOKEN";
+        when(jwtTokenResolver.extractBearerToken(authorizationHeader)).thenReturn(extractBearerToken);
+        when(jwtTokenResolver.resolveSignupToken(extractBearerToken)).thenReturn(claims);
+
+        // when, then
+        assertThatThrownBy(() -> memberService.signup(authorizationHeader, request))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.MEMBER_NICKNAME_ALREADY_EXIST.getMessage());
+    }
+
+    @Test
+    void 사용_가능한_닉네임일_경우_true를_반환한다() {
+        // given, when, then
+        assertThat(memberService.isAvailableNickname("곡곡")).isTrue();
+    }
+
+    @Test
+    void 중복된_닉네임일_경우_false를_반환한다() {
+        // given
+        Member member = Member.create("test@gmail.com",
+                "곡곡",
+                LocalDate.of(1990, 3, 31),
+                "https://profileImgUrl",
+                Gender.MALE,
+                Role.USER,
+                LoginType.GOOGLE);
+        memberRepository.save(member);
+
+        // when, then
+        assertThat(memberService.isAvailableNickname("곡곡")).isFalse();
     }
 
     @Test
