@@ -3,6 +3,7 @@ package com.backend.controller;
 import com.backend.common.config.MemberPrincipal;
 import com.backend.controller.cookie.CookieProvider;
 import com.backend.controller.cookie.CookieResolver;
+import com.backend.controller.swagger.MemberControllerSwagger;
 import com.backend.domain.member.Member;
 import com.backend.dto.BaseResponse;
 import com.backend.dto.request.GoogleOauthLoginRequest;
@@ -22,12 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberController {
+public class MemberController implements MemberControllerSwagger {
 
     private final CookieProvider cookieProvider;
     private final CookieResolver cookieResolver;
     private final MemberService memberService;
 
+    @Override
     @PostMapping("/oauth/login")
     public ResponseEntity<BaseResponse<AuthTokenResponse>> oauthGoogleLogin(@Valid @RequestBody GoogleOauthLoginRequest request) {
         AuthTokenResponse response = memberService.googleLogin(request);
@@ -45,8 +47,9 @@ public class MemberController {
                 .build();
     }
 
+    @Override
     @PostMapping("/oauth/signup")
-    public ResponseEntity<BaseResponse<AuthTokenResponse>> signup(
+    public ResponseEntity<BaseResponse<Void>> signup(
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody MemberSignupRequest request) {
         AuthTokenResponse response = memberService.signup(authorizationHeader, request);
@@ -60,6 +63,7 @@ public class MemberController {
                 .build();
     }
 
+    @Override
     @PostMapping("/oauth/logout")
     public ResponseEntity<BaseResponse<Void>> logout(@MemberPrincipal Member member, HttpServletRequest request) {
         String accessToken = cookieResolver.extractAccessToken(request);
@@ -76,6 +80,7 @@ public class MemberController {
                 .build();
     }
 
+    @Override
     @PostMapping("/accessToken/reissue")
     public ResponseEntity<BaseResponse<Void>> reissueAccessToken(HttpServletRequest request) {
         cookieResolver.checkLoginRequired(request);
