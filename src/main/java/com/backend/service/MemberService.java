@@ -60,7 +60,7 @@ public class MemberService {
     public AuthTokenResponse googleLogin(GoogleOauthLoginRequest request) {
         GoogleOauthInfoApiResponse infoApiResponse = oauthClient.requestOauthInfo(request);
 
-        Member member = infoApiResponse.toMember();
+        Member member = Member.fromOauthInfo(infoApiResponse.email(), infoApiResponse.picture(), LoginType.GOOGLE);
 
         return memberRepository.findByEmailAndLoginType(member.getEmail(), member.getLoginType())
                 .map(this::createAuthTokenResponse)
