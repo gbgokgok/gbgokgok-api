@@ -49,8 +49,17 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
+            mkdir -p ~/config
+            echo "${{ secrets.APPLICATION_DEV }}" > application-dev.yml
+            mv application-dev.yml ~/config/application-dev.yml
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gbgokgok-api
             docker stop gbgokgok-api || true
             docker rm gbgokgok-api || true
-            docker run -d --restart unless-stopped -p 8080:8080 --name gbgokgok-api ${{ secrets.DOCKERHUB_USERNAME }}/gbgokgok-api
+            docker run -d --restart unless-stopped \
+              -p 8080:8080 \
+              -v ~/config/application-dev.yml:/app/config/application-dev.yml \
+              --name gbgokgok-api \
+              ${{ secrets.DOCKERHUB_USERNAME }}/gbgokgok-api \
+              --spring.config.additional-location=file:/app/config/application-dev.yml \
+              --spring.profiles.active=dev
             docker image prune -f
