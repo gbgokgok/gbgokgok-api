@@ -4,6 +4,7 @@ import com.backend.common.exception.CustomException;
 import com.backend.common.exception.ErrorCode;
 import com.backend.domain.member.LoginType;
 import com.backend.domain.member.Member;
+import com.backend.domain.member.Nickname;
 import com.backend.domain.member.Role;
 import com.backend.dto.AuthMember;
 import com.backend.dto.request.GoogleOauthLoginRequest;
@@ -15,6 +16,7 @@ import com.backend.service.jwt.JwtTokenProvider;
 import com.backend.service.jwt.JwtTokenResolver;
 import com.backend.service.oauth.OauthClient;
 import io.jsonwebtoken.Claims;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class MemberService {
+
+    private static final Pattern KOREAN_NICKNAME_REGEX = Pattern.compile("^[가-힣0-9]{2,6}$");
+    private static final Pattern ENGLISH_NICKNAME_REGEX = Pattern.compile("^[a-zA-Z0-9]{2,14}$");
+    private static final Pattern NUMERIC_ONLY_NICKNAME_REGEX = Pattern.compile("^[0-9]+$");
 
     private final OauthClient oauthClient;
     private final JwtTokenProvider jwtTokenProvider;
@@ -47,6 +53,10 @@ public class MemberService {
                 Role.USER,
                 LoginType.GOOGLE);
 
+        if (memberRepository.existsByNickname(member.getNickname())) {
+            throw new CustomException(ErrorCode.MEMBER_NICKNAME_ALREADY_EXIST);
+        }
+
         if (memberRepository.existsByEmailAndLoginType(member.getEmail(), member.getLoginType())) {
             throw new CustomException(ErrorCode.MEMBER_ALREADY_EXIST);
         }
@@ -54,6 +64,11 @@ public class MemberService {
         memberRepository.save(member);
 
         return createAuthTokenResponse(member);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAvailableNickname(String nickname) {
+        return !memberRepository.existsByNickname(new Nickname(nickname));
     }
 
     @Transactional
