@@ -27,8 +27,10 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "존재하지 않는 회원입니다."),
     MEMBER_EMAIL_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 이메일 형식입니다."),
     MEMBER_NICKNAME_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "닉네임은 한글(숫자 포함) 2~6자 또는 영어(숫자 포함) 2~14자만 가능합니다."),
-    MEMBER_NICKNAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다.");
+    MEMBER_NICKNAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임입니다."),
 
+    // Place
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 관광지입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
